@@ -12,7 +12,7 @@ pipeline {
             steps{
                 withCredentials([file(credentialsId: 'minikube-kubeconfig', variable: 'KUBECONFIG_FILE')]) {
                     script {
-                        env.KUBECONFIG = KUBECONFIG_FILE
+                        env.KUBECONFIG = "${KUBECONFIG_FILE}"
                         echo "KUBECONFIG is set to ${env.KUBECONFIG}"
                     }
                 }
