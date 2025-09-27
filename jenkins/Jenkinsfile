@@ -1,16 +1,22 @@
 pipeline {
     agent any
-
     environment {
         DOCKER_IMAGE = "saitejadevopsengineer/devops-flagship-app:latest"
     }
-
     options {
         timeout(time: 3, unit: 'MINUTES')
         timestamps()
     }
-
     stages {
+        stage('Setup Credentials') {
+            steps{
+                withCredentials([file(credentialsId: 'minikube-kubeconfig', variable: 'KUBECONFIG_FILE')])
+                script {
+                    env.KUBECONFIG = KUBECONFIG_FILE
+                    echo "KUBECONFIG is set to ${env.KUBECONFIG}"
+                }
+            }
+        }
         stage('Checkout') {
             options {
                 timeout(time: 1, unit: 'MINUTES')
@@ -27,7 +33,6 @@ pipeline {
                 }
             }
         }
-
         stage('Build Docker Image') {
             options {
                 timeout(time: 1, unit: 'MINUTES')
@@ -46,7 +51,6 @@ pipeline {
                 }
             }
         }
-
         stage('Deploy to Minikube') {
             options {
                 timeout(time: 1, unit: 'MINUTES')
@@ -65,7 +69,6 @@ pipeline {
                 }
             }
         }
-
         stage('Verify Deployment') {
             options {
                 timeout(time: 1, unit: 'MINUTES')
