@@ -15,7 +15,7 @@ pipeline {
                         env.KUBECONFIG = "${KUBECONFIG_FILE}"
                         echo "KUBECONFIG is set to ${env.KUBECONFIG}"
                         sleep(10)
-                        minikube status
+                        bat "minikube status"
                     }
                 }
             }
