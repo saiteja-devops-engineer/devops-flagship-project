@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devops-flagship-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: devops-flagship-app
+  template:
+    metadata:
+      labels:
+        app: devops-flagship-app
+    spec:
+      containers:
+      - name: devops-flagship-app
+        image: devops-flagship-app:initial
+        ports:
+        - containerPort: 3000
