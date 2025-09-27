@@ -2,24 +2,13 @@ pipeline {
     agent any
     environment {
         DOCKER_IMAGE = "saitejadevopsengineer/devops-flagship-app:latest"
+        KUBECONFIG = "C:/Users/saite/.kube/config"
     }
     options {
         timeout(time: 3, unit: 'MINUTES')
         timestamps()
     }
     stages {
-        stage('Setup Credentials') {
-            steps{
-                withCredentials([file(credentialsId: 'minikube-kubeconfig', variable: 'KUBECONFIG_FILE')]) {
-                    script {
-                        env.KUBECONFIG = "${KUBECONFIG_FILE}"
-                        echo "KUBECONFIG is set to ${env.KUBECONFIG}"
-                        sleep(10)
-                        bat "minikube status"
-                    }
-                }
-            }
-        }
         stage('Checkout') {
             options {
                 timeout(time: 1, unit: 'MINUTES')
