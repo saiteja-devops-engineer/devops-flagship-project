@@ -1,0 +1,36 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE = "saitejadevopsengineer/devops-flagship-app:latest"
+        KUBECONFIG = "C:/Users/saite/.kube/config"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/saiteja-devops-engineer/devops-flagship-project.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                bat "docker build -t ${DOCKER_IMAGE} ."
+            }
+        }
+
+        stage('Deploy to Minikube') {
+            steps {
+                bat "kubectl apply -f k8s/deployment.yaml"
+                bat "kubectl apply -f k8s/service.yaml"
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                bat "kubectl get pods"
+                bat "kubectl get svc"
+            }
+        }
+    }
+}
