@@ -3,33 +3,84 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "saitejadevopsengineer/devops-flagship-app:latest"
-        KUBECONFIG = "C:/Users/saite/.kube/config"
+    }
+
+    options {
+        timeout(time: 3, unit: 'MINUTES')
+        timestamps()
     }
 
     stages {
         stage('Checkout') {
+            options {
+                timeout(time: 1, unit: 'MINUTES')
+            }
             steps {
                 git branch: 'main', url: 'https://github.com/saiteja-devops-engineer/devops-flagship-project.git'
+            }
+            post{
+                success {
+                    echo(message: 'Checkout repo is successful.')
+                }
+                failure {
+                    echo(message: 'Failed to checkout repo.')
+                }
             }
         }
 
         stage('Build Docker Image') {
+            options {
+                timeout(time: 1, unit: 'MINUTES')
+            }
             steps {
                 bat "docker build -t ${DOCKER_IMAGE} app/"
+                sleep(10)
+                bat 'docker image ls'
+            }
+            post{
+                success {
+                    echo(message: 'Successfully built the docker image.')
+                }
+                failure {
+                    echo(message: 'Failed to build the docker image.')
+                }
             }
         }
 
         stage('Deploy to Minikube') {
+            options {
+                timeout(time: 1, unit: 'MINUTES')
+            }
             steps {
                 bat "kubectl apply -f k8s/deployment.yaml"
                 bat "kubectl apply -f k8s/service.yaml"
+                sleep(10)
+            }
+            post{
+                success {
+                    echo(message: 'Successfully deployed to Minikube.')
+                }
+                failure {
+                    echo(message: 'Failed to deployed to Minikube.')
+                }
             }
         }
 
         stage('Verify Deployment') {
+            options {
+                timeout(time: 1, unit: 'MINUTES')
+            }
             steps {
                 bat "kubectl get pods -o wide"
                 bat "kubectl get svc -o wide"
+            }
+            post{
+                success {
+                    echo(message: 'Successfully displayed newly created pods and services.')
+                }
+                failure {
+                    echo(message: 'Failed to get details of pods and services.')
+                }
             }
         }
     }
