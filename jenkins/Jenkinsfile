@@ -38,7 +38,7 @@ pipeline {
             }
             steps {
                 bat "docker build -t ${DOCKER_IMAGE} app/"
-                sleep(10)
+                sleep(15)
                 bat 'docker image ls'
             }
             post{
@@ -57,7 +57,7 @@ pipeline {
             steps {
                 bat "kubectl apply -f k8s/deployment.yaml"
                 bat "kubectl apply -f k8s/service.yaml"
-                sleep(10)
+                sleep(15)
             }
             post{
                 success {
