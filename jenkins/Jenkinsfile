@@ -6,12 +6,12 @@ pipeline {
     }
     options {
         timeout(time: 3, unit: 'MINUTES')
-        buildDiscarder {
+        buildDiscarder (
             logRotator(
                 artifactNumToKeepStr: '50',
                 numToKeepStr: '50'
             )
-        }
+        )
         timestamps()
         disableConcurrentBuilds()
     }
@@ -87,11 +87,13 @@ pipeline {
         }
     }
     post{
-        archiveArtifacts artifacts: '**/*',
-        allowEmptyArchive: true,
-        fingerprint: true,
-        caseSensitive: false,
-        defaultExcludes: false,
-        followSymlinks: false
+        always {
+            archiveArtifacts artifacts: '**/*',
+            allowEmptyArchive: true,
+            fingerprint: true,
+            caseSensitive: false,
+            defaultExcludes: false,
+            followSymlinks: false
+        }
     }
 }
